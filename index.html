@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>建築設備フラッシュカード</title>
+<title>建築環境設備重要単語集</title>
 <style>
 :root{
   --bg:#ffffff;
@@ -31,6 +31,7 @@ header{
 header h1{
   margin:0 0 8px; font-size:clamp(22px,3vw,34px); font-weight:700; letter-spacing:.02em;
   color:#0f172a;
+  text-align: center;
 }
 header p{margin:0; color:var(--muted)}
 .controls{
@@ -97,6 +98,9 @@ summary .count{
 .face{
   position:absolute; inset:0; padding:18px; border-radius:var(--radius);
   backface-visibility:hidden; display:flex; flex-direction:column; gap:10px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   border:1px solid #e2e8f0;
 }
 .front{
@@ -114,8 +118,9 @@ summary .count{
 .a{
   color:#334155; line-height:1.55; font-size:15px;
 }
-.tags{
-  margin-top:auto; display:flex; gap:8px; flex-wrap:wrap;
+.tags {
+  margin-top: auto;
+  display: none;
 }
 .tag{
   font-size:12px; color:#2563eb; background:#f1f5f9; border:1px solid #cbd5e1;
@@ -132,13 +137,18 @@ small.code{color:#64748b}
 @media (max-width:740px){
   .controls{grid-template-columns:1fr; }
   .card{height:240px}
+  .deck {
+    grid-template-columns: 1fr !important;
+  }
+  .deck .card {
+    min-width: auto;
+  }
 }
 </style>
 </head>
 <body>
 <header>
-  <h1>建築設備フラッシュカード</h1>
-  <p>クリックで反転（Q→A）。検索、シャッフル、すべて展開／折りたたみも利用できます。</p>
+  <h1>建築環境設備重要単語集</h1>
   <div class="controls">
     <label class="search" title="キーワードでカードを絞り込み">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -1893,8 +1903,6 @@ small.code{color:#64748b}
 </main>
 
 <footer>
-  <p>Tips：カードはクリックで反転。<kbd>Ctrl</kbd> + <kbd>F</kbd> でも検索できますが、上の検索欄はタグや本文も対象にリアルタイム絞り込みします。</p>
-  <p><small class="code">本カードは提示メモに基づく要点整理です。実務では最新の法規・基準・機器仕様書・安全指針・地域要件をご確認ください。</small></p>
 </footer>
 
 <script>
