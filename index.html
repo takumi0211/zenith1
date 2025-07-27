@@ -47,7 +47,7 @@ header h1{
 }
 header p{margin:0; color:var(--muted)}
 .controls{
-  display:grid; gap:12px; grid-template-columns:1fr auto auto auto;
+  display:grid; gap:12px; grid-template-columns:1fr auto auto auto auto;
   margin-top:16px;
 }
 .search{
@@ -92,6 +92,21 @@ header p{margin:0; color:var(--muted)}
 :root.dark .btn.ghost:hover{
   background:#475569;
 }
+.btn.small{
+  padding:6px 10px;
+  font-size:14px;
+}
+.scoreboard{
+  display:flex;
+  align-items:center;
+  font-weight:600;
+}
+.score-buttons{
+  margin-top:auto;
+  display:none;
+  gap:8px;
+}
+.card.is-flipped .score-buttons{display:flex;}
 .main{
   max-width:1400px; margin:0 auto; padding:8px 24px 80px; display:grid; gap:24px;
 }
@@ -184,6 +199,7 @@ small.code{color:#64748b}
     <button class="btn" id="shuffle">シャッフル</button>
     <button class="btn ghost" id="toggle">すべて展開</button>
     <button class="btn ghost" id="theme">ダークモード</button>
+    <div class="scoreboard">スコア: <span id="score">0/0</span></div>
   </div>
 </header>
 
@@ -1997,6 +2013,35 @@ small.code{color:#64748b}
     setDarkMode(!isDark);
   });
   setDarkMode(localStorage.getItem('dark') === '1');
+
+  // score tracking
+  let score = 0, total = 0;
+  const scoreEl = document.getElementById('score');
+  function updateScore(){
+    scoreEl.textContent = score + '/' + total;
+  }
+  document.querySelectorAll('.card').forEach(card=>{
+    const back = card.querySelector('.face.back');
+    const buttons = document.createElement('div');
+    buttons.className = 'score-buttons';
+    buttons.innerHTML = '<button class="btn small ok">正解</button><button class="btn small ghost ng">不正解</button>';
+    back.appendChild(buttons);
+    const ok = buttons.querySelector('.ok');
+    const ng = buttons.querySelector('.ng');
+    ok.addEventListener('click', e=>{
+      e.stopPropagation();
+      score++; total++;
+      updateScore();
+      card.classList.remove('is-flipped');
+    });
+    ng.addEventListener('click', e=>{
+      e.stopPropagation();
+      total++;
+      updateScore();
+      card.classList.remove('is-flipped');
+    });
+  });
+  updateScore();
 
   // set counts initially
   document.querySelectorAll('details').forEach(d=>{
