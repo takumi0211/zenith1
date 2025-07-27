@@ -130,8 +130,16 @@ summary .count{
   grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
 }
 .card{
-  perspective:1200px; height:220px;
+  perspective:1200px; height:220px; position:relative;
 }
+.card.known .face{ border-color:var(--ok); }
+.card.unknown .face{ border-color:var(--bad); }
+.card.known::after,
+.card.unknown::after{
+  position:absolute; top:6px; right:8px; font-size:20px; font-weight:bold;
+}
+.card.known::after{ content:'\2713'; color:var(--ok); }
+.card.unknown::after{ content:'\2717'; color:var(--bad); }
 .card-inner{
   position:relative; width:100%; height:100%; transition:transform .5s ease;
   transform-style:preserve-3d; border-radius:var(--radius); box-shadow:var(--shadow);
@@ -2032,12 +2040,16 @@ small.code{color:#64748b}
       e.stopPropagation();
       score++; total++;
       updateScore();
+      card.classList.add('known');
+      card.classList.remove('unknown');
       card.classList.remove('is-flipped');
     });
     ng.addEventListener('click', e=>{
       e.stopPropagation();
       total++;
       updateScore();
+      card.classList.add('unknown');
+      card.classList.remove('known');
       card.classList.remove('is-flipped');
     });
   });
