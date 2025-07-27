@@ -6,7 +6,9 @@
 <title>建築環境設備重要単語集</title>
 <style>
 :root{
-  --bg:#ffffff;
+  --bg1:#f8fafc;
+  --bg2:#ffffff;
+  --bg3:#f1f5f9;
   --fg:#1e293b;
   --muted:#64748b;
   --card:#f8fafc;
@@ -18,11 +20,21 @@
   --shadow:0 6px 24px rgba(0,0,0,.1), 0 2px 6px rgba(0,0,0,.08);
   --radius:14px;
 }
+
+:root.dark{
+  --bg1:#1e293b;
+  --bg2:#0f172a;
+  --bg3:#1e293b;
+  --fg:#f8fafc;
+  --muted:#cbd5e1;
+  --card:#334155;
+  --card2:#475569;
+}
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
   margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-  background:linear-gradient(120deg,#f8fafc,#ffffff 60%,#f1f5f9);
+  background:linear-gradient(120deg,var(--bg1),var(--bg2) 60%,var(--bg3));
   color:var(--fg);
 }
 header{
@@ -30,23 +42,30 @@ header{
 }
 header h1{
   margin:0 0 8px; font-size:clamp(22px,3vw,34px); font-weight:700; letter-spacing:.02em;
-  color:#0f172a;
+  color:var(--fg);
   text-align: center;
 }
 header p{margin:0; color:var(--muted)}
 .controls{
-  display:grid; gap:12px; grid-template-columns:1fr auto auto;
+  display:grid; gap:12px; grid-template-columns:1fr auto auto auto;
   margin-top:16px;
 }
 .search{
   display:flex; align-items:center; gap:12px; padding:12px 16px; border-radius:12px;
   background:#ffffff; border:1px solid #e2e8f0; box-shadow:var(--shadow);
 }
+.dark .search{
+  background:#334155;
+  border-color:#475569;
+}
 .search input{
   flex:1; background:transparent; color:var(--fg); border:none; outline:none; font-size:16px;
 }
 .search input::placeholder{
   color:#94a3b8;
+}
+:root.dark .search input::placeholder{
+  color:#cbd5e1;
 }
 .btn{
   appearance:none; border:none; border-radius:12px; padding:12px 18px; cursor:pointer;
@@ -57,30 +76,38 @@ header p{margin:0; color:var(--muted)}
   background:#0284c7;
   transform:translateY(-1px);
 }
-.btn.ghost{ 
-  background:#ffffff; 
-  color:var(--fg); 
+.btn.ghost{
+  background:#ffffff;
+  color:var(--fg);
   border:1px solid #e2e8f0;
 }
 .btn.ghost:hover{
   background:#f1f5f9;
 }
+
+:root.dark .btn.ghost{
+  background:#334155;
+  border-color:#475569;
+}
+:root.dark .btn.ghost:hover{
+  background:#475569;
+}
 .main{
   max-width:1400px; margin:0 auto; padding:8px 24px 80px; display:grid; gap:24px;
 }
 details{
-  border:1px solid #e2e8f0; border-radius:16px; overflow:hidden; background:#ffffff;
+  border:1px solid #e2e8f0; border-radius:16px; overflow:hidden; background:var(--bg2);
   box-shadow:var(--shadow);
 }
 details>summary{
   list-style:none; cursor:pointer; padding:18px 22px; position:relative;
-  font-weight:700; font-size:18px; background:linear-gradient(90deg,#ffffff,#f8fafc);
+  font-weight:700; font-size:18px; background:linear-gradient(90deg,var(--bg2),var(--bg1));
   border-bottom:1px solid #e2e8f0; display:flex; gap:12px; align-items:center;
   color:#0f172a;
 }
 details[open]>summary{ border-bottom-color:#cbd5e1 }
 summary .count{
-  margin-left:auto; color:#2563eb; background:#f1f5f9; border:1px solid #cbd5e1;
+  margin-left:auto; color:#2563eb; background:var(--card2); border:1px solid #cbd5e1;
   padding:3px 10px; border-radius:999px; font-size:13px; font-weight:600;
 }
 .deck{
@@ -105,18 +132,18 @@ summary .count{
 }
 .front{
   background:radial-gradient(circle at 20% -10%,rgba(14,165,233,.08),transparent 50%),
-             linear-gradient(180deg,#ffffff,#f8fafc);
+             linear-gradient(180deg,var(--card),var(--card2));
 }
 .back{
   background:radial-gradient(circle at 80% 110%,rgba(5,150,105,.08),transparent 50%),
-             linear-gradient(180deg,#ffffff,#f8fafc);
+             linear-gradient(180deg,var(--card),var(--card2));
   transform:rotateY(180deg);
 }
 .q{
-  color:#0f172a; font-weight:700; line-height:1.35;
+  color:var(--fg); font-weight:700; line-height:1.35;
 }
 .a{
-  color:#334155; line-height:1.55; font-size:15px;
+  color:var(--fg); line-height:1.55; font-size:15px;
 }
 .tags {
   margin-top: auto;
@@ -156,6 +183,7 @@ small.code{color:#64748b}
     </label>
     <button class="btn" id="shuffle">シャッフル</button>
     <button class="btn ghost" id="toggle">すべて展開</button>
+    <button class="btn ghost" id="theme">ダークモード</button>
   </div>
 </header>
 
@@ -1911,6 +1939,7 @@ small.code{color:#64748b}
   const search = document.getElementById('search');
   const toggle = document.getElementById('toggle');
   const shuffleBtn = document.getElementById('shuffle');
+  const themeBtn = document.getElementById('theme');
 
   // flip on click
   container.addEventListener('click', e=>{
@@ -1956,6 +1985,18 @@ small.code{color:#64748b}
       }
     });
   });
+
+  // theme toggle
+  function setDarkMode(on){
+    document.documentElement.classList.toggle('dark', on);
+    themeBtn.textContent = on ? 'ライトモード' : 'ダークモード';
+    localStorage.setItem('dark', on ? '1' : '0');
+  }
+  themeBtn.addEventListener('click', ()=>{
+    const isDark = document.documentElement.classList.contains('dark');
+    setDarkMode(!isDark);
+  });
+  setDarkMode(localStorage.getItem('dark') === '1');
 
   // set counts initially
   document.querySelectorAll('details').forEach(d=>{
