@@ -1,0 +1,1961 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>建築設備フラッシュカード</title>
+<style>
+:root{
+  --bg:#ffffff;
+  --fg:#1e293b;
+  --muted:#64748b;
+  --card:#f8fafc;
+  --card2:#f1f5f9;
+  --accent:#0ea5e9;
+  --ok:#059669;
+  --warn:#d97706;
+  --bad:#dc2626;
+  --shadow:0 6px 24px rgba(0,0,0,.1), 0 2px 6px rgba(0,0,0,.08);
+  --radius:14px;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+  background:linear-gradient(120deg,#f8fafc,#ffffff 60%,#f1f5f9);
+  color:var(--fg);
+}
+header{
+  padding:28px 24px 12px; max-width:1400px; margin:0 auto;
+}
+header h1{
+  margin:0 0 8px; font-size:clamp(22px,3vw,34px); font-weight:700; letter-spacing:.02em;
+  color:#0f172a;
+}
+header p{margin:0; color:var(--muted)}
+.controls{
+  display:grid; gap:12px; grid-template-columns:1fr auto auto;
+  margin-top:16px;
+}
+.search{
+  display:flex; align-items:center; gap:12px; padding:12px 16px; border-radius:12px;
+  background:#ffffff; border:1px solid #e2e8f0; box-shadow:var(--shadow);
+}
+.search input{
+  flex:1; background:transparent; color:var(--fg); border:none; outline:none; font-size:16px;
+}
+.search input::placeholder{
+  color:#94a3b8;
+}
+.btn{
+  appearance:none; border:none; border-radius:12px; padding:12px 18px; cursor:pointer;
+  color:#ffffff; font-weight:600; background:var(--accent); box-shadow:var(--shadow);
+  transition:all 0.2s ease;
+}
+.btn:hover{
+  background:#0284c7;
+  transform:translateY(-1px);
+}
+.btn.ghost{ 
+  background:#ffffff; 
+  color:var(--fg); 
+  border:1px solid #e2e8f0;
+}
+.btn.ghost:hover{
+  background:#f1f5f9;
+}
+.main{
+  max-width:1400px; margin:0 auto; padding:8px 24px 80px; display:grid; gap:24px;
+}
+details{
+  border:1px solid #e2e8f0; border-radius:16px; overflow:hidden; background:#ffffff;
+  box-shadow:var(--shadow);
+}
+details>summary{
+  list-style:none; cursor:pointer; padding:18px 22px; position:relative;
+  font-weight:700; font-size:18px; background:linear-gradient(90deg,#ffffff,#f8fafc);
+  border-bottom:1px solid #e2e8f0; display:flex; gap:12px; align-items:center;
+  color:#0f172a;
+}
+details[open]>summary{ border-bottom-color:#cbd5e1 }
+summary .count{
+  margin-left:auto; color:#2563eb; background:#f1f5f9; border:1px solid #cbd5e1;
+  padding:3px 10px; border-radius:999px; font-size:13px; font-weight:600;
+}
+.deck{
+  padding:22px; display:grid; gap:16px;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+}
+.card{
+  perspective:1200px; height:220px;
+}
+.card-inner{
+  position:relative; width:100%; height:100%; transition:transform .5s ease;
+  transform-style:preserve-3d; border-radius:var(--radius); box-shadow:var(--shadow);
+}
+.card.is-flipped .card-inner{ transform:rotateY(180deg) }
+.face{
+  position:absolute; inset:0; padding:18px; border-radius:var(--radius);
+  backface-visibility:hidden; display:flex; flex-direction:column; gap:10px;
+  border:1px solid #e2e8f0;
+}
+.front{
+  background:radial-gradient(circle at 20% -10%,rgba(14,165,233,.08),transparent 50%),
+             linear-gradient(180deg,#ffffff,#f8fafc);
+}
+.back{
+  background:radial-gradient(circle at 80% 110%,rgba(5,150,105,.08),transparent 50%),
+             linear-gradient(180deg,#ffffff,#f8fafc);
+  transform:rotateY(180deg);
+}
+.q{
+  color:#0f172a; font-weight:700; line-height:1.35;
+}
+.a{
+  color:#334155; line-height:1.55; font-size:15px;
+}
+.tags{
+  margin-top:auto; display:flex; gap:8px; flex-wrap:wrap;
+}
+.tag{
+  font-size:12px; color:#2563eb; background:#f1f5f9; border:1px solid #cbd5e1;
+  padding:4px 8px; border-radius:999px;
+}
+kbd{
+  background:#f8fafc; border:1px solid #cbd5e1; border-bottom:2px solid #94a3b8;
+  border-radius:6px; padding:2px 6px; font-size:13px; color:#334155;
+}
+footer{
+  max-width:1400px; margin:0 auto; padding:0 24px 48px; color:var(--muted); font-size:14px;
+}
+small.code{color:#64748b}
+@media (max-width:740px){
+  .controls{grid-template-columns:1fr; }
+  .card{height:240px}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>建築設備フラッシュカード</h1>
+  <p>クリックで反転（Q→A）。検索、シャッフル、すべて展開／折りたたみも利用できます。</p>
+  <div class="controls">
+    <label class="search" title="キーワードでカードを絞り込み">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input id="search" placeholder="キーワード（例：COP, デシカント, WBGT, 一次エネルギー, VRF）" />
+    </label>
+    <button class="btn" id="shuffle">シャッフル</button>
+    <button class="btn ghost" id="toggle">すべて展開</button>
+  </div>
+</header>
+
+<main class="main" id="container">
+
+  <!-- 1. 建築を変えた二大発明 -->
+  <details open>
+    <summary>建築を変えた二大発明 <span class="count">8</span></summary>
+    <div class="deck">
+      <!-- card -->
+      <div class="card" data-text="二大発明 エレベータ エアコン 高層化 都市 集中">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">建築を変えた「二大発明」は？</div>
+            <div class="tags"><span class="tag">歴史</span><span class="tag">都市</span></div>
+          </div>
+          <div class="face back">
+            <div class="a">① エレベータ（機械力による垂直移動）<br>② エアコン（機械力による温湿度制御）</div>
+            <div class="tags"><span class="tag">基礎</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="エレベータ 影響 高層化 都市集中 職住分離 効率化">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">エレベータがもたらした都市・建築への主な影響を3つ挙げよ。</div>
+          </div>
+          <div class="face back">
+            <div class="a">高層化の加速／都市部への機能集中／職住の効率化（垂直動線の高速化）</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="エアコン 影響 開放から閉鎖 都市型 高密度 近接配置">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">エアコンは建築形態を「開放型→閉鎖型」へ変えた。なぜ？</div>
+          </div>
+          <div class="face back">
+            <div class="a">機械的に室内環境を作れるため、外部に対し開かなくても快適性を維持可能。結果として高密度・近接配置（都市型）が成立。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="都市型 建築 高密度 近接 隣棟間隔 空調機密化">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">空調の機密化が「隣の建物との距離」を縮められる理由は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">窓を閉じた閉鎖型で外気の影響を受けにくく、採光・通風に頼らない計画が可能になるため。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="開放型 閉鎖型 比較 居住環境 自然換気 外界依存">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">開放型建築と閉鎖型建築の環境形成の根本的な違いは？</div>
+          </div>
+          <div class="face back">
+            <div class="a">開放型は外界条件（風・日射）で調整、閉鎖型は機械設備で室内環境を直接制御。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="BCP 音環境 気密 断熱 外乱遮断 設備依存">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">閉鎖型の長所と短所を一つずつ。</div>
+          </div>
+          <div class="face back">
+            <div class="a">長所：外乱（暑さ寒さ・騒音）を遮断し安定品質。<br>短所：設備への依存度が高く、停電時の脆弱性が増す。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="自然通風 非空調期間 延長 開く建築 閉じる建築 ハイブリッド">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">「開く建築」と「閉じる建築」を両立させる設計的キーワードは？</div>
+          </div>
+          <div class="face back">
+            <div class="a">自然通風（クロスベンチレーション）やハイブリッド空調により、非空調期間を延長してエネルギー削減と快適性を両立させる。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="ヒートアイランド 空調 都市密度 冷房 排熱 影響">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">都市の高密度化・空調普及がヒートアイランドに与える影響は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">冷房排熱の増加や舗装・建物の蓄熱により都市部の夜間高温化を助長。対策として冷却塔の潜熱放出や緑化・反射率向上などが重要。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 2. 中央式 vs 個別式 -->
+  <details>
+    <summary>空調方式：中央式 vs 個別式 <span class="count">12</span></summary>
+    <div class="deck">
+      <div class="card" data-text="中央式 個別式 比較 個別制御性 干渉 省エネ">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">中央式と個別式、個別制御性と省エネ性のトレードオフは？</div>
+          </div>
+          <div class="face back">
+            <div class="a">中央式：空調機配置で個別性は持たせられるが熱源が一体で限界あり。<br>個別式：室外機・室内機が分散し個別要求に応えやすいが、相互干渉で非省エネになる場合がある。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="AHU 温湿度 空気質 フィルタ 換気 加湿">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">温湿度・空気質の確保に有利なのは中央式か個別式か。理由は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">中央式。AHUで高性能フィルタや加湿・全熱交換を組み合わせ、質の高い空気環境を実現しやすい。個別式は換気・加湿を別系統で追加する必要があり、導入品質がばらつきやすい。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="フロン 冷媒 漏えい 中央式 個別式 環境影響">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">フロン漏えいの観点で有利なのは？</div>
+          </div>
+          <div class="face back">
+            <div class="a">中央式。冷媒は熱源機に集中し、建物全体に冷媒配管を張り巡らせないため、漏えいリスク・保有量が限定的。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="未利用エネルギー 河川水 海水 下水 中央式 活用">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">未利用・自然エネルギー（河川水・下水熱など）を活用しやすい方式は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">中央式。大規模な熱源で低温熱利用やフリークーリングを取り込みやすい。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="ヒートアイランド 冷却塔 潜熱 低減 空冷機 熱放散">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">ヒートアイランド抑制に相対的に寄与するのは？理由は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">中央式。冷却塔で潜熱として熱放散でき、顕熱放出が相対的に減る。個別式は空冷機が多く顕熱放出で助長しやすい。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="スマートエネルギー 熱融通 DR 需要応答 蓄熱 連携">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">スマートエネルギーネットワークと親和性が高いのは？</div>
+          </div>
+          <div class="face back">
+            <div class="a">中央式。熱融通・蓄熱・DR（デマンドレスポンス）など、全体最適に寄与する仕組みに接続しやすい。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="VRF VRV 個別制御 冷媒系 リスク 長所短所">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">VRF/VRVシステムの長所と注意点を一言で。</div>
+          </div>
+          <div class="face back">
+            <div class="a">長所：高い個別制御性とインバータでの高効率。<br>注意：建物中に冷媒配管が広がり、漏えい時の環境・安全リスク管理が重要。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="DOAS 潜熱 顕熱 分離 個別式 併用 最適化">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">個別式の弱点を補い、空気質を高める代表的な構成は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">DOAS（外気専用処理）で潜熱・顕熱を分離処理し、室内は個別機で顕熱処理。換気・湿度・フィルタをDOAS側で担保するハイブリッドが有効。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="全熱交換器 第一種換気 省エネ 潜顕熱回収 外気負荷低減">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">第一種換気で全熱交換器を使う主なメリットは？</div>
+          </div>
+          <div class="face back">
+            <div class="a">給排気の潜熱・顕熱を回収し、外気負荷を大幅に低減。空調機の負荷・容量を抑制して省エネに寄与。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="ランアラウンド ループ 顕熱 交差汚染回避 フィルタ バイパス">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">ランアラウンドループの特長は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">給気・排気を流体回路で間接接続し、顕熱のみを移送。空気同士が接触しないため交差汚染リスクが低い。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="DCV 換気 CO2 センサー 省エネ 部分負荷 需要追従">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">DCV（Demand Controlled Ventilation）の狙いは？</div>
+          </div>
+          <div class="face back">
+            <div class="a">CO₂等の実負荷に応じて換気量を可変制御し、過剰換気を抑制して省エネと空気質の両立を図る。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="OCC オキュパンシー プレゼンス 個人最適 快適性 省エネ">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">OCC制御の効果は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">在室検知や個人嗜好を反映し、必要な場所だけ空調・照明を制御。快適性向上と省エネに寄与。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="FDD 故障検知 診断 BEMS データ 品質 保全">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">FDD（Fault Detection & Diagnostics）が設備運用にもたらす価値は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">センサ・運転データから異常を自動検知・診断し、早期是正で省エネ・信頼性・快適性を高める。ただしデータ欠損や一品生産の多様性が実装の壁。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 3. サイコロメトリ -->
+  <details>
+    <summary>サイコロメトリ（コイル・除湿・加湿） <span class="count">12</span></summary>
+    <div class="deck">
+      <div class="card" data-text="バイパスファクター BF コイル 相対湿度 90% 100%にならない 理由">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">コイル出口空気が相対湿度100%ではなく90%前後になる理由は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">一部の空気がコイルに接触せず素通りするため。素通り割合を<b>バイパスファクター（BF）</b>といい、その結果、出口空気は85〜95%RHで落ち着くことが多い。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="除湿 相対湿度 85-95% コイル表面濡れ 面湿球 温度">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">冷却除湿が起こる典型的な相対湿度域は？その要因は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">おおむね85〜95%RH。コイル面の濡れとバイパス空気の混合により、完全飽和に達しない。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="気化加湿 水噴霧 エンタルピー 変化 0 等エンタルピー 線">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">気化式・水噴霧式加湿のサイコロメトリ上の特徴は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">ほぼエンタルピー変化0（等エンタルピー線に沿って移動）。空気が水を蒸発させる潜熱を空気自身の顕熱でまかなう。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="水蒸気加湿 100℃ 潜熱 2686 kJ/kg 温度 ほぼ不変">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">水蒸気加湿で 100℃蒸気を用いた場合の熱量は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">概算で 2501 + 1.846 × 100 ≒ <b>2686 kJ/kg</b>。空気温度はほぼ一定のまま、湿度だけ上がる。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="BF 計算 コイル 接触 率 出口状態 混合 線">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">BFを用いたコイル出口状態の算定概念は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">入口空気とコイル飽和線上の接触空気の<b>混合</b>で出口状態を決める。BFが大きいほど入口状態の影響が残る。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="顕熱 潜熱 分離 DOAS デシカント 再熱不要 省エネ">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">顕熱と潜熱を分離処理すると何が嬉しい？</div>
+          </div>
+          <div class="face back">
+            <div class="a">過度な冷却除湿→再熱の非効率を回避でき、湿度はデシカントやDOASで、温度は放射やファンコイル等で処理して省エネ化できる。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="露点 結露 放射冷房 デューコントロール 露点以下防止">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">放射冷房で最重要の安全管理は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">室内露点温度の監視（露点コントロール）。放射面温度を露点以下にしないよう加湿・除湿連携を徹底する。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="加湿水 温度 hs 比エンタルピー 式 Δh (xs-x)hs">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">湿球温度の定義式のうち、加湿時のエンタルピー収支は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">Δh = (x<sub>s</sub> − x)·h<sub>s</sub><br>x<sub>s</sub>：加湿水温 t における飽和空気の絶対湿度、h<sub>s</sub>：同水温の水の比エンタルピー。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="湿球温度 定義 アスマン通風 乾湿計 置換 換気 連続測定">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">湿球温度はどのように測定する？</div>
+          </div>
+          <div class="face back">
+            <div class="a">感温部を湿らせ、空気を十分通風（アスマン通風乾湿計）して測定。対象空気と連続で置換する条件で定義される。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="WBGT 暑さ指数 定義 日射あり 0.7湿球 0.2グローブ 0.1外気温">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">WBGT（暑さ指数）の算出式（日射あり）は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">WBGT = 0.7·湿球温度 + 0.2·グローブ温度 + 0.1·外気温</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="WBGT 日射なし 0.7湿球 0.3グローブ 放射 対流">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">WBGT（暑さ指数）の算出式（日射なし）は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">WBGT = 0.7·湿球温度 + 0.3·グローブ温度</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="グローブ温度 黒球 放射 取得 対流 放出 平衡">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">グローブ温度とは何を表す指標？</div>
+          </div>
+          <div class="face back">
+            <div class="a">黒塗り球で放射取得と対流放出のバランスから求める「周辺の放射環境を含む温度」。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 4. 冷凍機・COP・冷媒・冷却塔 -->
+  <details>
+    <summary>冷凍機・COP・冷媒・冷却塔 <span class="count">12</span></summary>
+    <div class="deck">
+      <div class="card" data-text="COP 向上 凝縮温度 低く 蒸発温度 高く 近寄り温度">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">蒸気圧縮式冷凍機でCOPを上げる基本戦略は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">凝縮器の熱交換温度を<b>低く</b>、蒸発器の熱交換温度を<b>高く</b>する（アプローチ温度の縮小、熱交換改善、冷却水温低下など）。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="冷媒 R32 HFO オゾン層保護 GWP 低減 転換">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">近年の冷凍機で用いられる低環境負荷の冷媒例は？</div>
+          </div>
+          <div class="face back">
+            <div class="a"><b>R32</b>や<b>HFO系冷媒</b>（低GWP/オゾン層破壊係数0）。安全区分や可燃性への配慮が必要。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="冷却塔 開放式 密閉式 強制通風 自然通風 向流 直交流 クロスフロー">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">冷却塔の主要な分類を挙げよ（3軸）。</div>
+          </div>
+          <div class="face back">
+            <div class="a">① 開放式／密閉式（冷却水が空気に直接接触するか）<br>② 強制通風／自然通風（ファンの有無）<br>③ 向流（カウンタフロー）／直交流（クロスフロー）</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="ヒートアイランド 冷却塔 潜熱 空冷機 顕熱 比較 効果">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">冷却塔がヒートアイランド抑制に「一定の効果」と言える理由は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">熱の一部を<b>潜熱</b>として大気に放散でき、<b>顕熱</b>排熱主体の空冷機よりも周囲温度上昇を抑えやすい。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="フリークーリング 外気冷熱 冷却塔直結 中間期 冬期 省エネ">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">フリークーリングとは？いつ有効？</div>
+          </div>
+          <div class="face back">
+            <div class="a">外気が低温の季節に冷凍機を停止し、冷却塔等で直接冷水を作って供給する方式。中間期〜冬期で大きな省エネ効果。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="蓄熱 COP 向上 夜間 冷熱 生成 定格運転 需要平準化 DR">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">蓄熱システムがCOP向上に寄与するメカニズムを説明せよ。</div>
+          </div>
+          <div class="face back">
+            <div class="a">夜間の低外気温で熱源効率が上がる、かつ定格近傍運転で効率が安定。昼間の負荷ピークを平準化し、契約電力抑制・DR対応も可能。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="地域熱供給 メリット 集中管理 CO2削減 未利用エネルギー 活用 課題 熱損失 供給条件拘束">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">地域熱供給の主な利点と課題を一つずつ。</div>
+          </div>
+          <div class="face back">
+            <div class="a">利点：未利用エネルギー活用・集中管理で高効率化。<br>課題：供給温度・圧力の拘束や広域配管の熱損失で、需要家側の最適運転とズレる場合がある。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="コージェネ 総合効率 70-90% 発電 排熱 同時利用 燃料電池">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">コージェネレーションの定義と総合効率は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">1種の一次エネルギーから<b>電気＋熱</b>など複数エネルギーを同時取り出し。総合効率は<b>70〜90%</b>程度。燃料電池もコージェネの一種。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="燃料電池 水素 酸素 発電 熱 都市ガス 改質 BCP">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">燃料電池の建築での魅力と留意点は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">停電時の自立性（BCP）が高い。都市ガス改質で水素を得るため、CO₂排出はゼロでない。将来はグリーン水素など燃料脱炭素化が鍵。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="バイオマス カーボンニュートラル LCA 輸送 加工 CO2">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">バイオマスは「実質CO₂ゼロ」と言われるが、注意点は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">理論上は成長過程で吸収したCO₂と相殺だが、実際は輸送・加工・設備運用の<b>LCA</b>でCO₂排出が発生。トータルで評価する必要がある。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="DR デマンドレスポンス 蓄熱 再エネ 価格連動 CO2動的係数 最適運用">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">再エネ大量導入下で、蓄熱が果たす新しい役割は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">電力価格・CO₂動的係数を参照し、発電抑制回避や昼間需要シフトでダックカーブを緩和。DRで系統安定化に貢献しつつ実質CO₂排出を削減。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="冷却塔 自然通風 欧米 日本 強制通風 ファン 騒音 省エネ">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">自然通風式冷却塔の利点と課題は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">利点：ファン動力・騒音が低い。<br>課題：設置規模が大きく、気象条件に性能が左右されやすい。日本では強制通風が主流。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 5. 熱交換器・フィルタ -->
+  <details>
+    <summary>熱交換器・フィルタ・メンテナンス <span class="count">8</span></summary>
+    <div class="deck">
+      <div class="card" data-text="フィン コイル 伝熱面積 Q=kAΔTlm 面積増大 効果">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">コイルにフィンが必要な理由は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">伝熱量 Q = k·A·ΔT<sub>lm</sub>。<b>A（熱交換面積）</b>を増やして伝熱を強化するため。薄板フィンで面積と乱流を増やす。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="フィルタ 圧力損失 寿命 最終圧損 2-3倍 メンテ時期 清掃 交換">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">フィルタのメンテ時期を判断する目安は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">捕集粉じんで圧力損失が増大。<b>最終圧損は初期の2〜3倍</b>を目安に清掃・交換を行う。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="フィルタ 性能 粒子 捕集 MERV HEPA 省エネ 圧損 バランス">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">高性能フィルタの導入時に留意すべきバランスは？</div>
+          </div>
+          <div class="face back">
+            <div class="a">捕集効率と圧力損失のバランス。高性能ほど圧損が増え、ファン動力が上がるため、前置・中高性能の多段構成や面風速低減で両立を図る。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="加湿 フィルタ 目詰まり 腐食 生物汚染 レジオネラ 対策 ドレン管理">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">加湿設備と組み合わせる際の衛生上の注意は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">ドレン排水・殺菌・定期洗浄。水噴霧や気化式ではレジオネラ等のリスク管理、材質の腐食対策が必須。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="全熱交換器 エンタルピー 交差汚染 リーク 点検 パージ">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">全熱交換器での「交差汚染」対策は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">構造・圧力差管理でリークを最小化。医療など高要求用途ではランアラウンドや二重ダクト等、間接方式で対応する。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="DOAS フィルタ 高性能 加湿 除湿 室内空気質 品質確保">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">室内機個別式で空気質を底上げしたい。どこで担保する？</div>
+          </div>
+          <div class="face back">
+            <div class="a">DOAS側で高性能フィルタ・加湿・除湿を担保。室内機は顕熱処理主体にして、全館で一定のIAQ品質を確保する。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="メンテナンス BEMS FDD 圧損 監視 予兆検知 省エネ 維持">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">フィルタやコイルの汚れを運用で早期に把握する方法は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">差圧センサで圧損を監視し、BEMS＋FDDで劣化の予兆を検知。清掃・薬洗を適切タイミングで実施してCOP/風量を維持する。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="UA/C 室温変動率 非定常 応答 1/s 建物 熱容量 影響">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">UA/C は何を意味する指標？</div>
+          </div>
+          <div class="face back">
+            <div class="a"><b>室温変動率（1/s）</b>。建物の熱貫流率 UA と熱容量 C の比で、非定常応答の速さを表す。Cが大きいほど温度変動は緩やか。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 6. 流体・圧力損失 -->
+  <details>
+    <summary>流体・ダクト／配管・圧力損失 <span class="count">12</span></summary>
+    <div class="deck">
+      <div class="card" data-text="ベルヌーイ 静圧 動圧 和 一定 圧力損失 変換 損失 局部損失">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">理想流れで静圧＋動圧は一定だが、実流で損失が出るのはどこ？</div>
+          </div>
+          <div class="face back">
+            <div class="a">動圧→静圧の変換点、ダクト・配管の摩擦、曲がり・分岐などの<b>局部損失</b>で圧力が失われる。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="ムーディ線図 摩擦損失係数 レイノルズ数 相対粗さ ε/d 乱流 層流">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">摩擦損失係数は何から求める？空調流れのレイノルズ域は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">レイノルズ数 Re と相対粗さ ε/d を用いて<b>ムーディ線図</b>から読む。空気・水とも<b>乱流域</b>運転が一般的。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="相対粗さ 年数増加 ε=ε0+αT 錆 スケール 圧力損失 増大">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">相対粗さ ε は経年でどう変化？設計上の配慮は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">ε = ε₀ + αT と年数で増大。錆・スケールで圧力損失が増えるため、余裕設計や清掃・薬注管理が必要。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="長方形ダクト 等価直径 正方形 圧力損失 最小 形状係数">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">長方形ダクトの圧力損失計算はどう行う？形状で有利なのは？</div>
+          </div>
+          <div class="face back">
+            <div class="a">等価円形ダクトに変換して求める。圧力損失は<b>正方形</b>が最も少なく、扁平になるほど増える。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="局部損失 係数 ζ 動圧 0.5ρV2 式 分岐 曲がり 入口 出口">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">局部損失の基本式は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">ΔP = ζ · (½ρV²)。<br>ζ：局部損失係数、V：代表速度。分岐・曲がり・縮小拡大・入口出口でζが異なる。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="ファン軸動力 P=PQ/η 風量 圧力 効率 重要 指定点">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">ファン軸動力の基本式は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">P = (ΔP · Q) / η<sub>fan</sub><br>必要風量・全圧と効率から軸動力を見積もる。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="ファン 親和則 Q∝n Ptot∝n2 動力∝n3 インバータ 省エネ">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">ファンの親和則（回転数 n を変えたとき）を述べよ。</div>
+          </div>
+          <div class="face back">
+            <div class="a">風量 Q ∝ n、全圧 ΔP ∝ n²、動力 P ∝ n³。<br>インバータで n を少し下げるだけで動力が大きく削減できる。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="サージング 右上り特性 不安定 振動 風量 圧力 変動 対策 禁止領域">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">ファンのサージングとは？対策は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">右上り特性部で外力なしに圧力と流量が自励振動する不安定現象。<br>対策：その領域で運転しない、特性上サージングしにくい機種選定、余裕を持った系設計。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="ポンプ 動力 ρgH Q η キャビテーション 蒸気圧 静圧 低下 気泡 侵食">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">ポンプ軸動力の式と、キャビテーション発生要因を述べよ。</div>
+          </div>
+          <div class="face back">
+            <div class="a">動力 P = (ρ g H Q)/η。<br>キャビテーション：局部静圧がその温度の蒸気圧以下に低下し気泡発生、崩壊で振動・騒音・侵食を生む。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="NPSH 必要 余裕 吸込 押込 防止 配管 絞り 回避 温度 低減">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">キャビテーションを防ぐ設計要点（NPSH観点）を挙げよ。</div>
+          </div>
+          <div class="face back">
+            <div class="a">必要NPSHより十分大きい余裕を確保。吸込側配管の絞り・局部損失を避け、液温を下げ、押込配置やタンク液面高さで静圧を確保。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="トリチェリ 水銀柱 実験 大気圧 基礎 静圧 測定">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">水銀柱で大気圧を測定した実験者は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">トリチェリ（Torricelli）。水銀柱の高さから大気圧を評価した。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="軸流 ターボ シロッコ 送風機 特徴 風量 圧力 効率 適用">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">代表的送風機の特徴を簡潔に。</div>
+          </div>
+          <div class="face back">
+            <div class="a">軸流：プロペラ型、風量大・圧力小。<br>ターボ（後向き）：高効率・高圧。<br>シロッコ（多翼）：コンパクトで風量大、効率やや低い。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 7. 自動制御・BEMS -->
+  <details>
+    <summary>自動制御・BEMS・PID <span class="count">10</span></summary>
+    <div class="deck">
+      <div class="card" data-text="DDC Direct Digital Control 分散制御 バルブ ダンパ デジタル">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">DDCとは何の略で、何を指す？</div>
+          </div>
+          <div class="face back">
+            <div class="a"><b>Direct Digital Control</b>。バルブやダンパ等の調整器をデジタル制御し、分散制御化を進めた方式。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="自動制御 目的 快適 品質 省エネ 安全 労力削減">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">空調システムの自動制御の5つの目的。</div>
+          </div>
+          <div class="face back">
+            <div class="a">快適環境、製品品質、省エネ、安全性、運用労力削減。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="PID PI 比例 積分 微分 偏差 ゼロ 追従 D 省略 空調 PI主流">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">空調ではPIDのうち何制御が主流？理由は？</div>
+          </div>
+          <div class="face back">
+            <div class="a"><b>PI制御</b>が多い。微分成分はノイズに敏感で実設備では扱いづらく、過大応答を生じやすいため D を省略することが多い。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="ジーグラニコルス 限界感度 比例ゲイン 持続振動 周期 PID パラメータ 推定">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">ジーグラ・ニコルスの限界感度法とは？</div>
+          </div>
+          <div class="face back">
+            <div class="a">比例制御のみでゲインを上げ、持続振動が出た時のゲイン・周期からPIDパラメータを経験式で決定する手法。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="パラメータ ドリフト 経年 チューニング システム全体 最適化 相反 目的">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">PIDパラメータ設定での実務上の課題は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">経年・負荷変動で最適値が変わる／竣工時から放置されがち／ローカル最適がシステム全体最適に繋がらない。定期チューニングと全体視点が重要。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="BEMS 見える化 限界 FDD 最適制御 データ欠損 一品生産 複雑性">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">BEMSの現状の課題と展望は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">「見える化」に留まり本質的省エネに直結しない例が多い。今後はFDD・最適制御で運用改善へ直結。ただしデータ欠損・機器多様性が障壁。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="BACnet プロトコル 相互接続 標準 化 ビルオートメーション">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">BACnetは何のための標準？</div>
+          </div>
+          <div class="face back">
+            <div class="a">Building Automation and Control NETwork。空調・照明などビル設備間の通信プロトコル標準で、ベンダー間相互接続を容易にする。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="DR 需要応答 価格信号 CO2係数 連動 運用最適 蓄熱 協調">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">需要応答（DR）時の空調最適化で鍵となる設備は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">蓄熱槽・全熱交換器・可変風量/水量・インバータ。価格・CO₂係数・快適性制約を勘案した協調最適制御がポイント。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="OCC DCV FDD 連携 在室推定 人流 センサー 省エネ 快適">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">OCC・DCV・FDDを組み合わせる利点は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">在室・CO₂で需要追従、FDDで異常時は自動検知・復帰。快適性を守りつつ省エネ・保全を両立できる。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="スケジューリング 立上げ 最適化 予測制御 気象 需要予測 MPC">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">空調の立上げ・停止最適化に役立つ制御理論は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">モデル予測制御（MPC）などの予測制御。気象・在室・料金・CO₂係数を予見し、快適性制約内でコスト/CO₂最小化を図る。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 8. 放射・デシカント・タスク -->
+  <details>
+    <summary>放射冷房／デシカント／タスク・アンビエント <span class="count">10</span></summary>
+    <div class="deck">
+      <div class="card" data-text="放射冷房 メリット ドラフトなし 静粛 温度ムラ小 高温冷房 COP向上 未利用エネ">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">放射冷房の主なメリットを3つ。</div>
+          </div>
+          <div class="face back">
+            <div class="a">ドラフトなしで静か／温度ムラが小さい／高温冷房で熱源COP向上・河川水等の未利用エネ活用が可能。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="放射冷房 デメリット 換気 加湿別系 結露 立上り遅い 形態係数 小">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">放射冷房の注意点・デメリットを3つ。</div>
+          </div>
+          <div class="face back">
+            <div class="a">換気・加湿/除湿を別系統で要する／表面結露リスク／立上りが遅い。小面積パネルは形態係数が小さく効果が限定的。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="デシカント 潜熱処理 再熱不要 顕熱分離 省エネ 低温冷水 COP改善">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">デシカント空調の省エネメカニズムを説明。</div>
+          </div>
+          <div class="face back">
+            <div class="a">湿気（潜熱）を乾燥剤で直接除去し、冷却除湿→再熱を回避。冷水温度を高めに設定でき、熱源COPが改善する。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="TABS 躯体 放射 蓄熱 スラブ 水配管 慣性 大 省エネ 昼夜移行">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">TABSのコア概念は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">コンクリート躯体に配管を埋設し、躯体自体を<b>放射・蓄熱体</b>として使う。熱的慣性が大きく、夜間冷却との相性が良い。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="タスクアンビエント 局所 個別快適 全体設定緩和 省エネ 在室者 嗜好">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">タスク・アンビエント空調が省エネに効く仕組みは？</div>
+          </div>
+          <div class="face back">
+            <div class="a">周囲全体（アンビエント）は緩めに設定し、個の近傍（タスク）を好みに最適。全体設定温度の緩和で負荷を下げる。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="DOAS 放射 デシカント 組合せ 顕潜分離 高品質 IAQ 高効率">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">「放射＋DOAS＋デシカント」の組合せの狙いは？</div>
+          </div>
+          <div class="face back">
+            <div class="a">放射で顕熱、DOASで外気と潜熱を高品質処理。再熱不要・露点制御で高効率かつ高IAQを実現。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="自然通風 クロスベンチレーション 非空調期間 延長 窓操作 ハイブリッド">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">自然通風のエネルギー上の効果は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">非空調期間を延ばし、機械空調の稼働時間・負荷を削減。窓開放連動の安全制御や外気質判定も重要。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="形態係数 放射 パネル 効果 面積 視射 グローブ 温度 体感">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">放射空調で「形態係数」が重要な理由は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">人体と放射面の相互視認割合が放射交換量を決めるため。面積・位置・視角により体感効果が大きく変わる。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="結露 露点 センサ 露点追従 制御 放射 冷水 温度 リミット">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">放射冷房における結露防止の制御要件を挙げよ。</div>
+          </div>
+          <div class="face back">
+            <div class="a">室内露点を常時モニタし、冷水温度・放射面温度に下限リミット。湿度上昇時は冷水温引上げや除湿強化で回避。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="デシカント 再生 熱源 低品位熱 太陽熱 排熱 有効活用 脱炭素">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">デシカントの再生熱源として望ましいものは？</div>
+          </div>
+          <div class="face back">
+            <div class="a">低品位熱（太陽熱・排熱・地域熱）を活用できると、電力依存を下げつつ脱炭素に貢献できる。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 9. 再エネ・FIT/FIP -->
+  <details>
+    <summary>再生可能エネルギー・FIT/FIP・カーボンプライシング <span class="count">10</span></summary>
+    <div class="deck">
+      <div class="card" data-text="再エネ 定義 太陽光 風力 水力 枯渇しない 温室効果ガス 削減">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">再生可能エネルギーの定義と意義は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">自然界で再生され枯渇しない資源（太陽光・風力・水力など）。化石燃料依存を減らし、温室効果ガス削減に寄与。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="PV 発電効率 10-20% 系統連系 売電 逆潮流 自給 自足">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">太陽光発電の一般的な効率と運用形態は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">発電効率は概ね<b>10〜20%</b>。系統連系により自家消費に加え、余剰売電（逆潮流）や必要時の買電を行う。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="FIT 固定価格 買取 制度 普及 促進 期間 価格 政府設定">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">FIT制度の目的は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">再エネ電力を一定価格で長期買取し、導入回収性を高め普及を加速する。期間・価格は政府が段階的に見直す。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="FIP 市場連動 プレミアム 上乗せ 蓄電池 EMS 自立化 系統安定">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">FIP制度が促す技術投資は？FITと何が違う？</div>
+          </div>
+          <div class="face back">
+            <div class="a">市場価格にプレミアムを上乗せするため、価格変動に合わせ<b>蓄電池やEMS</b>を活用して価値最大化を狙う。FITの固定買い取りと異なり、市場と連動して自立化・系統安定に資する。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="再エネ賦課金 1kWh 4円 公平 負担 普及費用 電気料金 内包">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">再エネ賦課金とは？</div>
+          </div>
+          <div class="face back">
+            <div class="a">再エネ普及のための費用を国民全体で公平に負担。電気料金に上乗せ（目安：<b>1kWhあたり約4円</b>）。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="カーボンプライシング 炭素税 排出量取引 価格シグナル 削減 促進">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">カーボンプライシングの代表的手法を2つ。</div>
+          </div>
+          <div class="face back">
+            <div class="a">炭素税／排出量取引制度（キャップ&トレード）。排出に価格を付け、削減を市場的に促す。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="動的 CO2 排出係数 系統 状況 変動 再エネ活用 蓄熱 運用 最適化">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">「動的CO₂排出係数」を運用に使う利点は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">時間帯ごとの発電構成で係数が変わる。係数の低い時間に熱を作って蓄熱するなど、実質CO₂排出を最小化できる。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="ダックカーブ 夕方 急増 需要 昼間 需要創出 蓄熱 緩和">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">ダックカーブを緩和する空調側の方策は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">昼間のPV出力が高い時間に冷熱を蓄えておき、夕方の需要急増を抑える。DRと合わせて系統安定化に貢献。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="太陽光 価格低下 LCOE 電気代 連動 自家消費 最適化">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">PVコスト低下が運用方針に与える影響は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">系統価格・動的CO₂係数と連動した自家消費最適化へ移行。蓄熱や蓄電と組み合わせて価値最大化を図る。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 10. 一次・二次・発熱量 -->
+  <details>
+    <summary>一次・二次エネルギー／発熱量・IEA換算 <span class="count">12</span></summary>
+    <div class="deck">
+      <div class="card" data-text="高位発熱量 低位発熱量 凝縮潜熱 含む 含まない 90%">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">高位発熱量と低位発熱量の違いは？</div>
+          </div>
+          <div class="face back">
+            <div class="a">高位：生成水蒸気の凝縮潜熱を<b>含む</b>。低位：<b>含まない</b>。一般に低位は高位の約<b>90%</b>程度。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="一次エネルギー 二次エネルギー 変換 搬送 損失 発電効率 37%">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">一次エネルギーと二次エネルギーの違い、電力の代表効率は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">一次：供給側で必要なエネルギー（変換・搬送損失を含む）。二次：需要側の使用量。電気の一次換算は発電効率<b>約37%</b>で求める（便宜的に再エネも同率適用）。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="都市ガス 13A 45 MJ/m3N 換算 原単位">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">都市ガス13Aの一次エネルギー換算値は？</div>
+          </div>
+          <div class="face back">
+            <div class="a"><b>45 MJ/m³N</b>（低位発熱量ベース）。原単位計算の基本データ。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="一次換算 国差 IEA 水力100% 地熱10% 原子力33% 基準">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">IEA方式の一次換算係数（水力・地熱・原子力）は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">水力 100%、地熱 10%、原子力 33%。各国制度は電源構成で差があり、IEAは横断比較のため独自基準を採用。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="一次エネルギー 合算 単位 MJ 異種 エネルギー 合算 基準化">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">建物で一次エネルギーに統一する意義は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">電力・ガス・油など単位が異なるエネルギーを<b>熱量（MJ）</b>へ換算し、合算・比較・評価を可能にするため。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="消費エネルギー原単位 MJ/m2年 建物性能 指標 ベンチマーク 省エネ">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">消費エネルギー原単位とは？</div>
+          </div>
+          <div class="face back">
+            <div class="a">建物の1 m²あたり年間一次エネルギー消費量（MJ/m²・年）。用途別ベンチマークで性能を比較できる。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="SBT Science Based Targets 企業 排出 削減 目標 Scope1 2 3">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">SBTとは何か。Scope1〜3の意味は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">科学的根拠に基づく企業の排出削減目標。Scope1：自社直接、Scope2：購入電力等間接、Scope3：サプライチェーン含むその他。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="COP 会議 パリ協定 26% 46% 削減 業務 家庭 削減率 強化 グラスゴー">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">COP21とCOP26で日本が掲げた削減目標は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">COP21（パリ協定）：2013年比<b>26%</b>削減。<br>COP26（グラスゴー）：同<b>46%</b>削減へ上方修正。業務部門<b>51%</b>、家庭<b>66%</b>削減と厳格化。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="FIT FIP 電力市場 価格 再エネ 自立 系統安定 EMS 蓄電">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">FITからFIPへ移行することで、需要家に求められる能力は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">市場連動に応じた制御力。EMS・蓄電池・蓄熱で価格応答し、系統に価値を提供する「アクティブ需要家」化。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="IEA 国差 カナダ フランス 一次=二次 水力 原子力 搬送無視 国内ルール">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">一次換算の「国ごとの違い」の具体例は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">カナダ・フランスでは水力・原子力を一次=二次と扱う国内ルールがある（搬送損失無視）。国際比較にはIEA基準を用いる。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 11. 材料・窓・放射 -->
+  <details>
+    <summary>断熱・放射・窓（Low-E・U値/η値） <span class="count">12</span></summary>
+    <div class="deck">
+      <div class="card" data-text="熱伝導率 密度 一般 材料 大きいほど 伝導率 大 断熱材 例外 静止空気">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">一般材料では密度と熱伝導率の関係は？断熱材は例外？</div>
+          </div>
+          <div class="face back">
+            <div class="a">一般材は密度が大きいほど熱伝導率も大きい傾向。断熱材は<b>内部の静止空気</b>で断熱するため挙動が異なり、密度増で伝導率が低下する領域もある。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="断熱材 湿度 伝導率 上昇 静止空気 水 侵入 相関 正">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">断熱材の熱伝導率に影響が大きいのは温度か湿度か？</div>
+          </div>
+          <div class="face back">
+            <div class="a">湿度。静止空気が水分で置換されると伝導率が上がる。温度依存は小さいが、湿潤で大きく悪化するため防湿が重要。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="対流熱伝達率 室内4 室外20 放射 5 W/m2K 常用値 天井 暖房 α大">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">対流・放射熱伝達率の常用値は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">対流：室内 4、室外 20 W/m²K（目安）。放射：5（常温付近の微分値 ≒ 5.7 W/m²K）。天井暖房では上昇流で室内側 α が増大。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="キルヒホッフ 法則 不透明体 同一波長 吸収率=放射率 ε=α">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">キルヒホッフの法則（放射）を述べよ。</div>
+          </div>
+          <div class="face back">
+            <div class="a">不透明体では、同一波長域で<b>吸収率 = 放射率</b>（ε = α）が成り立つ。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="窓 熱貫流率 U 値 4.5 W/m2K アルミ 複層 日射取得率 η 0.8 単板">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">従来的な窓の代表値（U・η）は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">アルミサッシ＋複層ガラスのU値は約<b>4.5 W/m²K</b>。単板ガラスの日射熱取得率 η は約<b>0.8</b>。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="最新 樹脂サッシ トリプル Low-E U=0.55-0.59 η=0.32-0.57 ブラインド 0.1以下">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">最新の高性能窓（樹脂サッシ＋トリプル）の典型性能は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">U ≈ <b>0.55〜0.59 W/m²K</b>、η ≈ <b>0.32〜0.57</b>。外付けブラインド併用で η は<b>0.1以下</b>も可能。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="Low-E ガラス 金属膜 位置 室内側 断熱 室外側 遮熱 夏冬 適用">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">Low-Eガラスの金属膜はどちら側に配置する？目的別に。</div>
+          </div>
+          <div class="face back">
+            <div class="a">室内側：<b>断熱</b>タイプ（冬に室内放射を反射）。<br>室外側：<b>遮熱</b>タイプ（夏に日射を反射）。設計地域の季節特性で選択。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="中空層 真空 アルゴン 充填 対流 抑制 放射 抑制 低放射 膜 併用">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">複層ガラスで対流・放射を抑える手法をそれぞれ。</div>
+          </div>
+          <div class="face back">
+            <div class="a">対流：中空層の厚さ最適化、<b>真空化</b>や<b>アルゴン充填</b>。<br>放射：<b>Low-E（低放射）膜</b>の採用。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="3μm 長波 放射 ガラス 吸収 遮蔽 室内放射 熱環境">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">波長3 μmより長い放射に対するガラスの特性は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">ガラスは長波長（3 μm超）放射を<b>吸収</b>しやすい。室内熱放射の取り扱いで重要。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="外付けブラインド 日射遮蔽 熱取得率 大幅低減 冷房負荷 低減 眩しさ 抑制">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">外付けブラインドの効果を2つ。</div>
+          </div>
+          <div class="face back">
+            <div class="a">ガラス到達前に日射を反射・対流放熱でき、ηを大幅に低減して冷房負荷を抑える。グレア抑制にも有効。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="非定常 伝熱 熱容量 蓄熱 建物 慣性 快適性 省エネ 運用戦略">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">非定常解析が建築設備で重要な理由は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">建物の蓄熱特性を踏まえ、先行起動・夜間放熱・DR対応など運用戦略の最適化に欠かせないため。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 12. 室内空気質・VOC・換気測定 -->
+  <details>
+    <summary>室内空気質・VOC・換気量／空気齢測定 <span class="count">16</span></summary>
+    <div class="deck">
+      <div class="card" data-text="MCS 化学物質過敏症 許容量 1/10 1/100 微量 反応 注意">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">MCS（化学物質過敏症）への設計上の配慮は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">一般の許容量の<b>1/10〜1/100</b>でも反応。低放散材料の選択、換気強化、工程管理・養生で曝露を最小化。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="VOC VVOC SVOC 沸点 ホルムアルデヒド トルエン 分類">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">VOCsの分類（VVOC/VOC/SVOC）と代表例を挙げよ。</div>
+          </div>
+          <div class="face back">
+            <div class="a">VVOC：ホルムアルデヒド（沸点低）<br>VOC：トルエン等<br>SVOC：可塑剤など（沸点高）</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="ホルムアルデヒド 閾値 0.1 mg/m3 F☆☆☆☆ F★★★★ 等級 放散基準">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">ホルムアルデヒドの人の検知閾値と建材等級の目安は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">検知閾値は<b>0.1 mg/m³</b>。<br>F☆☆☆☆（F4）は最も低放散で使用面積制限なし。F☆☆やF☆☆☆には制限あり（例：F2は0.12〜0.02 mg/m²hなど）。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="シックビル 欧米 CO2 許容 2500ppm 緩和 オイルショック 換気低減 影響教訓">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">欧米でCO₂許容濃度が緩く設定された歴史的背景と結果は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">オイルショックで換気負荷削減のため許容濃度を<b>2500 ppm</b>に緩和した結果、空気質低下から<b>シックビル症候群</b>が問題化した。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="西高東低 季節風 コリオリ 北半球 右向き 冬 北風 夏 南風 形成要因">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">冬の「西高東低」で北風になる理由は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">西から東への気圧配置に地球の自転（コリオリ力：北半球で進行右向き）が作用し、風向が北寄りになる。夏は逆配置で南風が卓越。</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 換気量測定 -->
+      <div class="card" data-text="換気量 定常濃度法 トレーサ M C C0 Q=M/(C-C0) 撹拌 必須">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">定常濃度法の原理式を示せ（記号定義込み）。</div>
+          </div>
+          <div class="face back">
+            <div class="a">Q = M / (C − C₀)<br>M：注入量、C：室内定常濃度、C₀：外気濃度。室内は十分に撹拌されている前提。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="濃度減衰法 多時点 M=0 減衰曲線 ログ 直線 回帰">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">濃度減衰法（多時点法）の特徴は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">注入停止（M=0）後の濃度減衰を多点測定。ln(C−C₀) の直線回帰から換気回数を算出し、換気量 Q を求める。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="濃度減衰法 二時点法 簡便 開始 濃度 任意時刻 二点 から換気回数 推定">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">濃度減衰法（二時点法）とは？</div>
+          </div>
+          <div class="face back">
+            <div class="a">開始時と任意時刻の2点の濃度差のみで換気回数を求める簡便法。撹拌度合いや外気濃度の安定に留意。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="一定濃度法 追従制御 dC/dt=0 M 調整 Q=M/(C-C0) フィードバック">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">一定濃度法の基本式と特徴は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">dC/dt=0 として <b>Q = M/(C − C₀)</b>。室内濃度 C を一定に保つよう M をリアルタイム制御する。</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 空気齢 -->
+      <div class="card" data-text="空気齢 パルス法 到達時間 面積 比 τp 応答 積分">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">パルス法での空気齢 τₚ の求め方は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">吹出口から短時間パルス注入し、測定点濃度応答 C<sub>p</sub>(t) を記録。到達トレーサ量と経過時間の<b>面積比</b>から平均到達時間 τₚ を算出。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="ステップアップ法 空気齢 立上り 遅れ 面積 関係 Cs 到達 遅延評価">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">ステップアップ法の概念を説明。</div>
+          </div>
+          <div class="face back">
+            <div class="a">吹出口濃度を Cs に上げ、測定点濃度が Cs に近づくまでの<b>遅れ</b>を面積で評価して空気齢を求める。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="ステップダウン法 空気齢 飽和 Cs 注入停止 減衰 面積 関係式">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">ステップダウン法とは？</div>
+          </div>
+          <div class="face back">
+            <div class="a">室内を一様に Cs まで飽和後に注入停止し、C<sub>dn</sub>(t) の減衰曲線から面積関係で空気齢を算出。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="局所空気交換効率 εp 名目換気時間/局所空気齢 完全混合1 ピストン2 換気回数 逆数">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">局所空気交換効率 εₚ の定義と基準値は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">εₚ = 名目換気時間 / 局所空気齢。<br>完全混合で<b>1</b>、ピストンフローで<b>2</b>。名目換気時間は 1/換気回数（=室容積/換気量）。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="空気交換効率 εa 名目/2 室平均空気齢 完全混合0.5 ピストン1 全体評価">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">空気交換効率 εₐ の定義と基準値は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">εₐ = （名目換気時間の半分）/ 室平均空気齢。<br>完全混合で<b>0.5</b>、ピストンフローで<b>1</b>。室全体の換気効率を示す。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 13. 噴流・到達距離 -->
+  <details>
+    <summary>吹出気流・噴流特性・到達距離 <span class="count">8</span></summary>
+    <div class="deck">
+      <div class="card" data-text="噴流 定速域 遷移 主流 消滅 X/D0 5 8 100">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">自由噴流の4領域と代表的な距離目安は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">定速域：X ≲ 5D₀、遷移域：5D₀ ≲ X ≲ 8D₀、主流域：8D₀ ≲ X ≲ 100D₀、消滅域：X ≳ 100D₀。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="主流域 速度 Vx ∝ 1/X 巻込み 質量 増加 運動量保存">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">主流域の中心速度 V<sub>x</sub> の距離依存は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">周囲空気を巻き込んで拡散し、中心速度はおおむね <b>V<sub>x</sub> ∝ 1/X</b> で減衰する。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="到達距離 定義 0.25 m/s 目安 壁面 噴流 √2 倍 伸びる コアンダ効果">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">到達距離の定義と、壁面近傍噴流でどう変わる？</div>
+          </div>
+          <div class="face back">
+            <div class="a">中心軸速度が<b>0.25 m/s</b>に落ちる距離を到達距離とする。壁面近傍では到達距離が<b>約√2倍</b>に伸びる。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="天井 吹出 長手 流路 付着 コアンダ 天井面 伝い 達距離 伸長 ドラフト 配慮">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">天井吹出での到達距離確保とドラフト対策は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">天井面に付着させて長手方向に流す（コアンダ）。占有域到達時の速度を0.25 m/s以下に抑え、拡散板で速度を均しドラフトを回避。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="X V' 一定 kVD V'=kVD/X 運動量保存 近似式">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">自由噴流の中心速度近似式 V' = k V D / X の意味は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">噴流の運動量保存から導かれる経験則。V：初速、D：開口径、X：距離、k：係数。X V' が概ね一定となる。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="ドラフト 対策 吹出温度 差 小さく 風速 配分 均一 在室域 0.25m/s以下 目安">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">ドラフト感を避ける設計指標を挙げよ。</div>
+          </div>
+          <div class="face back">
+            <div class="a">在室域の風速<b>0.25 m/s以下</b>、温度差小さく、吹出口分散・拡散で速度・温度の均一化を図る。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="第一種換気 全熱交換 省エネ 外気負荷 効果 温湿度 回収">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">第一種換気で全熱交換を使うと何が省エネ？</div>
+          </div>
+          <div class="face back">
+            <div class="a">外気の顕熱・潜熱負荷を回収し、空調コイル負荷を大幅に低減。換気と空調の統合効率が上がる。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="プレナム 空間 天井裏 空気流通 圧力 分布 漏気注意 清掃 点検">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">プレナム空間利用時の注意点は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">漏気・騒音・粉じん堆積に注意。圧力分布のムラを避け、点検容易性と清掃性を確保する。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 14. 透湿・水分・水利用 -->
+  <details>
+    <summary>透湿・結露・水利用（グレーウォーター） <span class="count">8</span></summary>
+    <div class="deck">
+      <div class="card" data-text="ガラス 熱抵抗 無視 近似 q r = Δθ Δθ≈0 表面温度 推定">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">「ガラス自体の熱抵抗が無視できる」とは何を意味する？</div>
+          </div>
+          <div class="face back">
+            <div class="a">q·r = Δθ で r（抵抗）が極小→Δθ ≈ 0。つまりガラス厚み内の温度降下が小さく、表面温度差を近似的に無視できるという意味。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="透湿抵抗 直列 抵抗比 水蒸気分圧 勾配 材料B 小 ほぼ一定">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">二層材料で透湿抵抗が大きく異なる場合の分圧分布は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">水蒸気分圧差は抵抗比で分担。材料Bの透湿抵抗が十分小さいと、B内の分圧は<b>ほぼ一定</b>として扱える。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="内部結露 防止 透湿抵抗 配置 防湿層 室内側 側高 温暖側 高抵抗">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">内部結露を防ぐための防湿層配置の原則は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">一般に暖房期の室内側へ<b>高い透湿抵抗</b>の層（防湿層）を設置。水蒸気が冷側で露点に達する前に抑える。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="グレーウォーター 洗面 洗濯 シャワー 再利用 トイレ 洗浄 散水 水資源 節約">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">グレーウォーターとは？どの用途に再利用できる？</div>
+          </div>
+          <div class="face back">
+            <div class="a">洗面・洗濯・シャワーなどの生活雑排水。再処理して<b>トイレ洗浄・散水</b>等に再利用し、水使用量を削減できる。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="結露 表面温度 露点 超過 防止 換気 断熱 露点監視 ロガー">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">結露を防ぐ基本戦略を3つ。</div>
+          </div>
+          <div class="face back">
+            <div class="a">表面温度を露点以上に保つ断熱／湿度低減の換気・除湿／露点監視に基づく運用制御（特に放射冷房で重要）。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="外断熱 内断熱 温度 分布 結露 リスク 躯体 保護 熱容量 活用 TABS 相性">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">外断熱と内断熱の結露リスク・熱容量活用の違いは？</div>
+          </div>
+          <div class="face back">
+            <div class="a">外断熱は躯体が温度ムラ少なく結露リスク低、躯体熱容量を活用しやすい。内断熱は躯体が外気側で冷やされやすく、部分結露に留意が必要。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="透湿計算 グラフ p-vs-位置 露点 交差 判定 施工誤差 余裕">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">透湿計算で内部結露の有無をどう判定する？</div>
+          </div>
+          <div class="face back">
+            <div class="a">層ごとの水蒸気分圧線と飽和水蒸気圧線の交差を確認。交差すればその位置で結露。施工誤差や経年劣化を見込んだ余裕設計が望ましい。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-text="湿度 管理 VOC 放散 速度 上昇 高湿 防止 換気 乾燥 重要性">
+        <div class="card-inner">
+          <div class="face front">
+            <div class="q">VOC対策として湿度管理が重要な理由は？</div>
+          </div>
+          <div class="face back">
+            <div class="a">高湿は材料の吸脱着や化学反応を促し、放散速度に影響。適切な換気・乾燥で放散を低減できる。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 15. 用語スピードラウンド -->
+  <details>
+    <summary>用語スピードラウンド <span class="count">16</span></summary>
+    <div class="deck">
+      <div class="card" data-text="フリークーリング 外気低温 冷凍機停止 冷却塔 冷水 省エネ">
+        <div class="card-inner"><div class="face front"><div class="q">フリークーリング</div></div><div class="face back"><div class="a">外気が低温の季節に冷凍機を停止し、冷却塔等で冷水を生成して供給する省エネ方式。</div></div></div>
+      </div>
+      <div class="card" data-text="TABS 躯体 放射 蓄熱 スラブ 配管">
+        <div class="card-inner"><div class="face front"><div class="q">TABS</div></div><div class="face back"><div class="a">躯体（主にコンクリートスラブ）に配管を埋設し、躯体を放射・蓄熱部位として利用する冷暖房。</div></div></div>
+      </div>
+      <div class="card" data-text="DOAS 外気専用 潜熱 顕熱 分離 高品質 換気">
+        <div class="card-inner"><div class="face front"><div class="q">DOAS</div></div><div class="face back"><div class="a">Dedicated Outdoor Air System。外気を専用ユニットで処理し、潜熱・顕熱を分離制御するシステム。</div></div></div>
+      </div>
+      <div class="card" data-text="ランアラウンドループ 顕熱移送 交差汚染 回避">
+        <div class="card-inner"><div class="face front"><div class="q">ランアラウンドループ</div></div><div class="face back"><div class="a">給排気側コイルを流体閉ループで接続し、顕熱のみを移す熱交換。空気が接触しないため交差汚染が少ない。</div></div></div>
+      </div>
+      <div class="card" data-text="DCV 需要制御換気 CO2 センサー 可変 換気量">
+        <div class="card-inner"><div class="face front"><div class="q">DCV</div></div><div class="face back"><div class="a">Demand Controlled Ventilation。在室・CO₂等に応じ換気量を自動調整する方式。</div></div></div>
+      </div>
+      <div class="card" data-text="OCC 在室者 中心 制御 個別最適 プレゼンス">
+        <div class="card-inner"><div class="face front"><div class="q">OCC</div></div><div class="face back"><div class="a">Occupant-Centric Control。占有者の存在や好みに応じ、空調・照明を最適化する制御。</div></div></div>
+      </div>
+      <div class="card" data-text="VRV VRF 冷媒流量 可変 インバータ 個別制御">
+        <div class="card-inner"><div class="face front"><div class="q">VRV/VRF</div></div><div class="face back"><div class="a">Variable Refrigerant Volume/Flow。冷媒流量をインバータで可変制御し、各室を個別制御可能な空調。</div></div></div>
+      </div>
+      <div class="card" data-text="FDD 故障検知 診断 データ解析 自動 化">
+        <div class="card-inner"><div class="face front"><div class="q">FDD</div></div><div class="face back"><div class="a">Fault Detection & Diagnostics。運転・センサデータから異常を自動検知・診断する機能。</div></div></div>
+      </div>
+      <div class="card" data-text="アトリウム 採光 通風 吹抜け 環境形成">
+        <div class="card-inner"><div class="face front"><div class="q">アトリウム</div></div><div class="face back"><div class="a">建物内の大きな吹抜け空間。自然採光・通風を促し、コモンスペースとしての環境形成に寄与。</div></div></div>
+      </div>
+      <div class="card" data-text="エコチューニング 既存建物 運用改善 省エネ">
+        <div class="card-inner"><div class="face front"><div class="q">エコチューニング</div></div><div class="face back"><div class="a">既存設備の運用改善により省エネを実現する取組。制御最適化・スケジューリング見直し等。</div></div></div>
+      </div>
+      <div class="card" data-text="グリーンルーフ 屋上緑化 断熱 防音 ヒートアイランド 緩和">
+        <div class="card-inner"><div class="face front"><div class="q">グリーンルーフ</div></div><div class="face back"><div class="a">屋上緑化。断熱・防音・雨水遅延・都市熱環境の緩和に寄与。</div></div></div>
+      </div>
+      <div class="card" data-text="バイオフィリックデザイン 自然要素 健康 快適 生産性 向上">
+        <div class="card-inner"><div class="face front"><div class="q">バイオフィリックデザイン</div></div><div class="face back"><div class="a">自然要素（植栽・水・自然材料・眺望）を取り込む設計思想。健康・快適性・生産性向上に寄与。</div></div></div>
+      </div>
+      <div class="card" data-text="プレナム 天井裏 空気 通路 圧力分布 漏気注意">
+        <div class="card-inner"><div class="face front"><div class="q">プレナム空間</div></div><div class="face back"><div class="a">天井裏など空気を通すための空間。圧力分布・漏気・清掃性に留意。</div></div></div>
+      </div>
+      <div class="card" data-text="第一種換気 給気 排気 機械 換気 熱交換 可能 省エネ">
+        <div class="card-inner"><div class="face front"><div class="q">第一種換気</div></div><div class="face back"><div class="a">給気・排気とも機械で行う方式。全熱交換器の導入が可能で省エネ性が高い。</div></div></div>
+      </div>
+      <div class="card" data-text="第二種換気 給気 機械 排気 自然 クリーンルーム 陽圧">
+        <div class="card-inner"><div class="face front"><div class="q">第二種換気</div></div><div class="face back"><div class="a">給気が機械、排気は自然。室内を陽圧に保ち、外部汚染の侵入を抑える（クリーン用途など）。</div></div></div>
+      </div>
+      <div class="card" data-text="第三種換気 排気 機械 給気 自然 住宅 普及 陰圧">
+        <div class="card-inner"><div class="face front"><div class="q">第三種換気</div></div><div class="face back"><div class="a">排気が機械、給気は自然。室内をやや陰圧に保ち、住宅で広く用いられる。</div></div></div>
+      </div>
+    </div>
+  </details>
+
+</main>
+
+<footer>
+  <p>Tips：カードはクリックで反転。<kbd>Ctrl</kbd> + <kbd>F</kbd> でも検索できますが、上の検索欄はタグや本文も対象にリアルタイム絞り込みします。</p>
+  <p><small class="code">本カードは提示メモに基づく要点整理です。実務では最新の法規・基準・機器仕様書・安全指針・地域要件をご確認ください。</small></p>
+</footer>
+
+<script>
+(function(){
+  const container = document.getElementById('container');
+  const search = document.getElementById('search');
+  const toggle = document.getElementById('toggle');
+  const shuffleBtn = document.getElementById('shuffle');
+
+  // flip on click
+  container.addEventListener('click', e=>{
+    const card = e.target.closest('.card');
+    if(!card) return;
+    card.classList.toggle('is-flipped');
+  });
+
+  // search filter
+  function norm(s){ return (s||'').toLowerCase(); }
+  search.addEventListener('input', ()=>{
+    const q = norm(search.value).replace(/\s+/g,' ').trim();
+    const words = q.split(' ').filter(Boolean);
+    const cards = container.querySelectorAll('.card');
+    cards.forEach(c=>{
+      const t = norm(c.dataset.text + ' ' + c.textContent);
+      const show = words.every(w => t.includes(w));
+      c.style.display = show ? '' : 'none';
+    });
+    // update counts
+    document.querySelectorAll('details').forEach(d=>{
+      const count = d.querySelectorAll('.card:not([style*="display: none"])').length;
+      const span = d.querySelector('.count');
+      if(span) span.textContent = count;
+    });
+  });
+
+  // expand / collapse all
+  let expanded = false;
+  toggle.addEventListener('click', ()=>{
+    expanded = !expanded;
+    document.querySelectorAll('details').forEach(d=> d.open = expanded);
+    toggle.textContent = expanded ? 'すべて折りたたみ' : 'すべて展開';
+  });
+
+  // shuffle cards within each deck
+  shuffleBtn.addEventListener('click', ()=>{
+    document.querySelectorAll('.deck').forEach(deck=>{
+      const cards = Array.from(deck.children);
+      for(let i=cards.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        deck.insertBefore(cards[j], cards[i]);
+      }
+    });
+  });
+
+  // set counts initially
+  document.querySelectorAll('details').forEach(d=>{
+    const count = d.querySelectorAll('.card').length;
+    const span = d.querySelector('.count');
+    if(span) span.textContent = count;
+  });
+})();
+</script>
+</body>
+</html>
